@@ -1,9 +1,16 @@
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
 
 from werkzeug.test import TestResponse
 
 from pyshellgame.app import create_app
+from pyshellgame.challenges.http import HealthCheckChallenge
+from pyshellgame.save import (
+    default_save_path,
+    load_completed_challenges,
+    write_completed_challenges,
+)
 
 HTTP_METHODS = {"GET", "POST", "PUT", "PATCH", "DELETE"}
 
@@ -21,10 +28,16 @@ class GameSession:
     any future file-editing challenge flow both funnel through it.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, save_path: Optional[Path] = None) -> None:
         self.app = create_app()
         self.client = self.app.test_client()
         self.last_http_response: Optional[TestResponse] = None
+
+        self.save_path = Path(save_path) if save_path is not None else default_save_path()
+        self.completed_challenges: set[str] = load_completed_challenges(self.save_path)
+
+        self.challenge = HealthCheckChallenge()
+        self.challenge.setup(self)
 
     def run_command(self, text: str) -> CommandResult:
         command = text.strip()
@@ -34,10 +47,24 @@ class GameSession:
 
         verb, args = parts[0], parts[1:]
         if verb == "help":
-            return CommandResult(output="Available commands: help, curl")
-        if verb == "curl":
-            return self._run_curl(args)
-        return CommandResult(output=f"Unknown command: {command}", success=False)
+            result = CommandResult(output="Available commands: help, curl")
+        elif verb == "curl":
+            result = self._run_curl(args)
+        else:
+            result = CommandResult(output=f"Unknown command: {command}", success=False)
+
+        self._check_challenge_completion()
+        return result
+
+    def is_challenge_completed(self, challenge_id: str) -> bool:
+        return challenge_id in self.completed_challenges
+
+    def _check_challenge_completion(self) -> None:
+        if self.is_challenge_completed(self.challenge.id):
+            return
+        if self.challenge.check_state(self):
+            self.completed_challenges.add(self.challenge.id)
+            write_completed_challenges(self.save_path, self.completed_challenges)
 
     def _run_curl(self, args: list[str]) -> CommandResult:
         if not args:

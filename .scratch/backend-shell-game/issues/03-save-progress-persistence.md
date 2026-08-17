@@ -4,10 +4,10 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] A local JSON save file (under a user dotfile/profile location) records completed chapters/challenges
-- [ ] Completing a challenge updates the save file
-- [ ] Launching the game loads the save file if present and reflects prior completion state
-- [ ] A fresh save (no file present) starts the player at the beginning without erroring
-- [ ] A test verifies save/load round-trips correctly through `GameSession`, without asserting on raw file contents as the primary behavior under test
+- [x] A local JSON save file (under a user dotfile/profile location) records completed chapters/challenges
+- [x] Completing a challenge updates the save file
+- [x] Launching the game loads the save file if present and reflects prior completion state
+- [x] A fresh save (no file present) starts the player at the beginning without erroring
+- [x] A test verifies save/load round-trips correctly through `GameSession`, without asserting on raw file contents as the primary behavior under test

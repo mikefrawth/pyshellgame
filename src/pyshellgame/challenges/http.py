@@ -5,6 +5,8 @@ class HealthCheckChallenge(Challenge):
     """Chapter 1: diagnose the broken `/status` endpoint and find the
     real health-check endpoint (`/healthz`) that reports the app is up."""
 
+    id = "chapter1-healthcheck"
+
     def setup(self, session) -> None:
         pass  # the app is already wired with the broken /status endpoint
 

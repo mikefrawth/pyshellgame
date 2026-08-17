@@ -5,6 +5,8 @@ class Challenge:
     I/O - that belongs exclusively to the CLI presentation layer.
     """
 
+    id: str
+
     def setup(self, session) -> None:
         raise NotImplementedError
 
