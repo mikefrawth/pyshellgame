@@ -6,6 +6,7 @@ class Challenge:
     """
 
     id: str
+    hints: list[str] = []
 
     def setup(self, session) -> None:
         raise NotImplementedError

@@ -38,6 +38,7 @@ class GameSession:
 
         self.challenge = HealthCheckChallenge()
         self.challenge.setup(self)
+        self._hint_level = -1
 
     def run_command(self, text: str) -> CommandResult:
         command = text.strip()
@@ -47,9 +48,11 @@ class GameSession:
 
         verb, args = parts[0], parts[1:]
         if verb == "help":
-            result = CommandResult(output="Available commands: help, curl")
+            result = CommandResult(output="Available commands: help, curl, hint")
         elif verb == "curl":
             result = self._run_curl(args)
+        elif verb == "hint":
+            result = self._run_hint()
         else:
             result = CommandResult(output=f"Unknown command: {command}", success=False)
 
@@ -65,6 +68,14 @@ class GameSession:
         if self.challenge.check_state(self):
             self.completed_challenges.add(self.challenge.id)
             write_completed_challenges(self.save_path, self.completed_challenges)
+
+    def _run_hint(self) -> CommandResult:
+        hints = self.challenge.hints
+        if not hints:
+            return CommandResult(output="No hints available for this challenge.")
+
+        self._hint_level = min(self._hint_level + 1, len(hints) - 1)
+        return CommandResult(output=hints[self._hint_level])
 
     def _run_curl(self, args: list[str]) -> CommandResult:
         if not args:
