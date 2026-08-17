@@ -4,11 +4,11 @@
 
 **Blocked by:** 01
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `GameSession` owns a real in-process Flask application instance (no mocks/fakes standing in for it)
-- [ ] A `curl`-style REPL command sends real requests to that Flask app and returns real responses through `CommandResult`
-- [ ] A `Challenge` base class defines `setup(session)` and `check_state(session)`, with no terminal I/O inside either
-- [ ] One concrete HTTP challenge is implemented (e.g. diagnose and observe a misbehaving endpoint) and is playable via REPL commands alone
-- [ ] The challenge resolves via state-inspection: `check_state()` inspects live Flask/response state, not player-typed text
-- [ ] A passing-path test and a failing-path test both exist for this challenge, driven only through `GameSession.run_command()`
+- [x] `GameSession` owns a real in-process Flask application instance (no mocks/fakes standing in for it)
+- [x] A `curl`-style REPL command sends real requests to that Flask app and returns real responses through `CommandResult`
+- [x] A `Challenge` base class defines `setup(session)` and `check_state(session)`, with no terminal I/O inside either
+- [x] One concrete HTTP challenge is implemented (e.g. diagnose and observe a misbehaving endpoint) and is playable via REPL commands alone
+- [x] The challenge resolves via state-inspection: `check_state()` inspects live Flask/response state, not player-typed text
+- [x] A passing-path test and a failing-path test both exist for this challenge, driven only through `GameSession.run_command()`
